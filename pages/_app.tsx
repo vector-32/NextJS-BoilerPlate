@@ -1,8 +1,31 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import LoaderContextProvider from "../contexts/loaderContext";
+import AuthContextProvider, { AuthContext } from "../contexts/authContext";
+import LoaderComponent from "../components/loaderComponent";
+import { useContext, useEffect } from "react";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+function AuthIntialize() {
+	
+	const { checkStatus } = useContext(AuthContext);
+
+	useEffect(() => {
+		checkStatus();
+	}, []);
+	
+	return <></>;
 }
 
-export default MyApp
+function MyApp({ Component, pageProps }: AppProps) {
+	return (
+		<AuthContextProvider>
+			<AuthIntialize />
+			<LoaderContextProvider>
+				<LoaderComponent />
+				<Component {...pageProps} />
+			</LoaderContextProvider>
+		</AuthContextProvider>
+	);
+}
+
+export default MyApp;
