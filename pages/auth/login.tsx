@@ -1,16 +1,28 @@
+import { Field, Form, Formik } from "formik";
 import Head from "next/head";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../contexts/authContext";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useAuth } from "../../contexts/authContext";
+import * as Yup from "yup";
+import { Button } from "@chakra-ui/react";
+import CusInput from "../../components/inputComponent";
 
 export default function Login() {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+	const validationSchema = Yup.object().shape({
+		email: Yup.string()
+			.email("Invalid Email")
+			.required("Email is required"),
+		password: Yup.string()
+			.min(6, "Password must be at least 6 characters")
+			.required("Password is required"),
+	});
 
-	const { user, login } = useContext(AuthContext);
+	const router = useRouter();
+	const { user, login } = useAuth();
 
 	useEffect(() => {
-		if(user.logged == true){
-			window.location.href = '/';
+		if (user?.logged == true) {
+			router.push("/");
 		}
 	}, [user]);
 
@@ -20,43 +32,44 @@ export default function Login() {
 				<title>Login Page</title>
 			</Head>
 			<div>
-				<h1 style={{ textAlign: "center" }}>Login Page</h1>
+				<h1 style={{ textAlign: "center", fontSize: "2.5rem" }}>
+					Login Page
+				</h1>
 			</div>
 			<br />
-			<div>
-				<h4 style={{ textAlign: "center" }}>
-					Username:
-					<input
-						value={username}
-						onChange={(e) => {
-							setUsername(e.target.value);
-						}}
-						type="text"
-					/>
-				</h4>
-				<h4 style={{ textAlign: "center" }}>
-					Password:
-					<input
-						value={password}
-						onChange={(e) => {
-							setPassword(e.target.value);
-						}}
-						type="password"
-					/>
-				</h4>
-				<h4 style={{ textAlign: "center" }}>
-					<button
-						onClick={async () => {
-							let ans: any = await login(username, password);
-							if(ans.success == false){
-								alert(ans.message);
-							}
-						}}
-					>
-						Login
-					</button>
-				</h4>
-			</div>
+			<Formik
+				initialValues={{ email: "", password: "" }}
+				validationSchema={validationSchema}
+				onSubmit={(values, actions) => {
+					if (login) login(values.email, values.password);
+				}}
+			>
+				{(formProps) => (
+					<Form style={{ maxWidth: "30vw", margin: "auto" }}>
+						<CusInput
+							name="email"
+							disName="Email Address"
+							placeholder="Email Address"
+							type="email"
+						/>
+						<br />
+						<CusInput
+							name="password"
+							disName="Password"
+							placeholder="Password"
+							type="password"
+						/>
+						<Button
+							mt={4}
+							colorScheme="teal"
+							isLoading={formProps.isSubmitting}
+							type="submit"
+						>
+							Submit
+						</Button>
+					</Form>
+				)}
+			</Formik>
 		</>
 	);
 }

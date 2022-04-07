@@ -1,30 +1,33 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import LoaderContextProvider from "../contexts/loaderContext";
-import AuthContextProvider, { AuthContext } from "../contexts/authContext";
+import { AuthContextProvider, useAuth } from "../contexts/authContext";
 import LoaderComponent from "../components/loaderComponent";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "../components/theme/extendedTheme";
 
 function AuthIntialize() {
-	
-	const { checkStatus } = useContext(AuthContext);
+	const { checkStatus } = useAuth();
 
 	useEffect(() => {
-		checkStatus();
+		if (checkStatus) checkStatus();
 	}, []);
-	
+
 	return <></>;
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
-		<AuthContextProvider>
-			<AuthIntialize />
-			<LoaderContextProvider>
-				<LoaderComponent />
-				<Component {...pageProps} />
-			</LoaderContextProvider>
-		</AuthContextProvider>
+		<ChakraProvider theme={theme}>
+			<AuthContextProvider>
+				<AuthIntialize />
+				<LoaderContextProvider>
+					<LoaderComponent />
+					<Component {...pageProps} />
+				</LoaderContextProvider>
+			</AuthContextProvider>
+		</ChakraProvider>
 	);
 }
 

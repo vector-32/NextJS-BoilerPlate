@@ -1,10 +1,8 @@
 import type { NextPage } from "next";
-import Image from "next/image";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 const Home: NextPage = () => {
-
 	return (
 		<div className={styles.container}>
 			<Head>
@@ -20,11 +18,6 @@ const Home: NextPage = () => {
 				<h1 className={styles.title}>
 					Welcome to <a href="https://nextjs.org">Next.js!</a>
 				</h1>
-				<Image
-					src="/assets/test.jpg"
-					height={1920}
-					width={1080}
-				></Image>
 				<p className={styles.description}>
 					Get started by editing{" "}
 					<code className={styles.code}>pages/index.tsx</code>
@@ -34,9 +27,7 @@ const Home: NextPage = () => {
 					<Link href="/auth">
 						<a className={styles.card}>
 							<h2>Authenticated Route &rarr;</h2>
-							<p>
-								This route is authenticated.
-							</p>
+							<p>This route is authenticated.</p>
 						</a>
 					</Link>
 
@@ -44,7 +35,8 @@ const Home: NextPage = () => {
 						<a className={styles.card}>
 							<h2>Login Page &rarr;</h2>
 							<p>
-								This route is the place where you can go and authenticate yourself.
+								This route is the place where you can go and
+								authenticate yourself.
 							</p>
 						</a>
 					</Link>

@@ -1,10 +1,21 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import AuthService from "../services/authService";
 
-export const AuthContext = createContext({user: {logged: false, user: {}}, login: (email: string, password: string) => {}, logout: () => {}, checkStatus: () => {}});
+interface UserData {
+	logged?: Boolean;
+	user?: any;
+}
+interface AuthContextInterface {
+	user?: UserData;
+	login?: (email: string, password: string) => Promise<any>;
+	logout?: () => Promise<any>;
+	checkStatus?: () => Promise<any>;
+}
 
-export default function AuthContextProvider(props: any) {
-	const [user, setUser] = useState({ logged: false, user: {} });
+export const AuthContext = createContext<AuthContextInterface>({});
+
+export function AuthContextProvider(props: any) {
+	const [user, setUser] = useState<UserData>({});
 
 	const login = async (email: string, password: string) => {
 		return AuthService.login(email, password).then((res) => {
@@ -29,11 +40,20 @@ export default function AuthContextProvider(props: any) {
 		} else {
 			setUser({ logged: false, user: {} });
 		}
-	}
+	};
 
 	return (
 		<AuthContext.Provider value={{ user, login, logout, checkStatus }}>
 			{props.children}
 		</AuthContext.Provider>
 	);
+}
+
+export function useAuth() {
+	const context = useContext(AuthContext);
+
+	if (!context)
+		throw new Error("useAuth must be used inside a `AuthContextProvider`");
+
+	return context;
 }

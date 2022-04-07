@@ -1,25 +1,28 @@
+import { Flex } from "@chakra-ui/react";
 import { useContext } from "react";
+import SkewLoader from "react-spinners/SkewLoader";
 import { LoaderContext } from "../contexts/loaderContext";
 
 export default function LoaderComponent(props: any) {
-	const { loader, startLoading, stopLoading } = useContext(LoaderContext);
+	const { loader } = useContext(LoaderContext);
 
-	// return (
-	// 	<div>
-	// 		{(loader > 0) && (
-	// 			<div className="backdrop">
-	// 				<div className="loader"></div>
-	// 			</div>
-	// 		)}
-	// 	</div>
-	// );
-	if (loader > 0) {
-		return (
-			<div className="backdrop">
-				<div className="loader"></div>
-			</div>
-		);
-	} else {
-		return (<></>);
-	}
+	return (
+		<div>
+			{loader > 0 && (
+				<div className="backdrop">
+					<Flex
+						justifyContent="center"
+						alignItems="center"
+						height="100vh"
+					>
+						<SkewLoader
+							size={50}
+							color={""}
+							loading={loader != 0}
+						/>
+					</Flex>
+				</div>
+			)}
+		</div>
+	);
 }
